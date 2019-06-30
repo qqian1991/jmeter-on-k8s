@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jmeter-slaves
+  labels:
+    jmeter_mode: slave
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      jmeter_mode: slave
+  template:
+    metadata:
+      labels:
+        jmeter_mode: slave
+    spec:
+      containers:
+      - name: jmslave
+        image: qqian1991/jmeter-slave:5.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1099
+        - containerPort: 50000
+        resources:
+          limits:
+            cpu: 4000m
+            memory: 4Gi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jmeter-slaves-svc
+  labels:
+    jmeter_mode: slave
+spec:
+  clusterIP: None
+  ports:
+    - port: 1099
+      name: first
+      targetPort: 1099
+    - port: 50000
+      name: second
+      targetPort: 50000
+  selector:
+    jmeter_mode: slave

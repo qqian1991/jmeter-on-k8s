@@ -1,1 +1,0 @@
-# jmeter-on-k8s
