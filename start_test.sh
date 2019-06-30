@@ -10,11 +10,8 @@ then
 fi
 
 test_name="$(basename "$jmx")"
-
 master_pod=`kubectl get po -n jmeter | grep jmeter-master | awk '{print $1}'`
-
 kubectl cp "$jmx" -n jmeter "$master_pod:/$test_name"
-kubectl cp "./load_test.sh" -n jmeter "$master_pod:/"
 
 ## Starting Jmeter load test
-kubectl exec -ti -n jmeter $master_pod -- /bin/bash /load_test.sh "$test_name"
+kubectl exec -ti -n jmeter $master_pod -- /bin/bash /load_test "$test_name"
